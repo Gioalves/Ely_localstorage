@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurantes</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #3636a9;
+            background-color: #e9e7e7;
+            
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+           align-items: center;
+           text-align:right;
+          
+            
+        }
+
+        label {
+            display:flexbox;
+            width: 90px;
+            margin-bottom: 5px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+           
+        }
+
+        input {
+            width: 210px;
+            margin-bottom: 5px;
+            border-style: double;
+        
+            
+        }
+
+        button {
+            padding: 5px;
+            cursor: pointer;
+            color: rgb(45, 139, 239);
+            
+            
+        }
+
+        table {
+            width: 100%;
+            border-collapse:separate;
+            margin-top: 20px;
+            border-style: solid; color: rgb(28, 28, 137);
+    
+        }
+
+        th, td {
+            border: 1px solid #9f9f9f;
+            padding: 8px;
+            text-align: left;
+            text-decoration: underline;
+            text-align: center;
+        }
+
+        div h1 {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-size:small;
+            text-align: center;
+            color: #919090;
+            text-decoration: underline;
+            
+
+            
+
+        }
+        
+    </style>
+</head>
+<body>
+
+    <h1>Preencha os dados do Restaurante</h1>
+
+    <form id="restaurantForm">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" placeholder="Nome do restaurante" required>
+
+        <label for="tipo">Tipo:</label>
+        <input type="text" id="tipo" placeholder="Tipo de culinária" required>
+
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" placeholder="Endereço do restaurante" required>
+
+        <label for="telefone">Telefone:</label>
+        <input type="text" id="telefone" placeholder="Telefone do restaurante" required>
+
+        <label for="horario">Horário:</label><br/>
+        <input type="text" id="horario" placeholder="Horário de funcionamento" required><br/>
+    </form>   
+        <button type="button" onclick="inserirRestaurante()">Inserir Restaurante</button>
+    
+
+    <h2>Lista de Restaurantes</h2>
+    <table id="restaurantTable">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Endereço</th>
+                <th>Telefone</th>
+                <th>Horário</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="restaurantList"></tbody>
+    </table><br/><br/><br/><br/><br/><br/><br/><br/>
+    <div id="texto_final"><h1>Desenvolvido por Giovani Alves</h1></div>
+    <script>
+        // Função para inserir restaurante
+        function inserirRestaurante() {
+            var nome = document.getElementById("nome").value;
+            var tipo = document.getElementById("tipo").value;
+            var endereco = document.getElementById("endereco").value;
+            var telefone = document.getElementById("telefone").value;
+            var horario = document.getElementById("horario").value;
+
+            // Verifica se todos os campos estão preenchidos
+            if (nome && tipo && endereco && telefone && horario) {
+                // Obtém os restaurantes existentes do localStorage
+                var restaurantes = JSON.parse(localStorage.getItem("restaurantes")) || [];
+
+                // Adiciona o novo restaurante à lista
+                restaurantes.push({ nome, tipo, endereco, telefone, horario });
+
+                // Salva a lista atualizada no localStorage
+                localStorage.setItem("restaurantes", JSON.stringify(restaurantes));
+
+                // Atualiza a tabela exibida na página
+                listarRestaurantes();
+
+                // Limpa os campos do formulário
+                document.getElementById("restaurantForm").reset();
+            } else {
+                alert("Por favor, preencha todos os campos.");
+            }
+        }
+
+        // Função para listar restaurantes
+        function listarRestaurantes() {
+            var restaurantes = JSON.parse(localStorage.getItem("restaurantes")) || [];
+            var restaurantList = document.getElementById("restaurantList");
+            restaurantList.innerHTML = "";
+
+            // Adiciona cada restaurante à tabela na página
+            restaurantes.forEach(function (restaurante) {
+                var row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${restaurante.nome}</td>
+                    <td>${restaurante.tipo}</td>
+                    <td>${restaurante.endereco}</td>
+                    <td>${restaurante.telefone}</td>
+                    <td>${restaurante.horario}</td>
+                    <td><button onclick="excluirRestaurante('${restaurante.nome}')">Excluir</button></td>`;
+                restaurantList.appendChild(row);
+            });
+        }
+
+        // Função para excluir restaurante
+        function excluirRestaurante(nome) {
+            var restaurantes = JSON.parse(localStorage.getItem("restaurantes")) || [];
+
+            // Filtra os restaurantes, removendo aquele com o nome específico
+            var restaurantesAtualizados = restaurantes.filter(function (restaurante) {
+                return restaurante.nome !== nome;
+            });
+
+            // Atualiza o localStorage com a nova lista de restaurantes
+            localStorage.setItem("restaurantes", JSON.stringify(restaurantesAtualizados));
+
+            // Atualiza a tabela exibida na página
+            listarRestaurantes();
+        }
+
+        // Ao carregar a página, exibe a tabela de restaurantes armazenada no localStorage
+        window.onload = listarRestaurantes;
+
+        
+    </script><br/><br/><br/><br/><br/><br/>
+
+    
+
+</body>
+</html>
